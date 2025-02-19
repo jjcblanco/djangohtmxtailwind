@@ -1,4 +1,8 @@
 from django.db import models
+import helpers
+from cloudinary.models import CloudinaryField
+
+helpers.cloudinary_init()
 
 # Create your models here.
 
@@ -20,7 +24,8 @@ def handle_uploaded_file(f,file_name):
 class Course(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to=handle_uploaded_file, null=True, blank=True)
+    #image = models.ImageField(upload_to=handle_uploaded_file, null=True, blank=True)
+    image = CloudinaryField("image",null=True)
     access = models.CharField(max_length=10, choices = AccessRequierements.choices,default=AccessRequierements.ANYONE)
     status = models.CharField(max_length=10, choices = PublishStatus.choices,default=PublishStatus.DRAFT)
 
