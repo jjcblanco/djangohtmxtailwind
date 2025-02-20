@@ -33,4 +33,29 @@ class Course(models.Model):
     def is_published(self):
         return self.status == PublishStatus.PUBLISHED
 
+    @property 
+    def image_admin(self):
+        if not self.image:
+            return ""
+        image_options = {	
+            "width": 400,
+            "height": 400,
+            "crop": "fill"
+        }
+               
+        url = self.image.build_url(image_options)
+        return url
     
+    def image_thumbnail(self,as_html=False,width=400,height=400):
+        if not self.image:
+            return ""
+        image_options = {	
+            "width": 400,
+            "height": 400,
+            "crop": "fill"
+        }
+        if as_html:
+            return self.image.image(**image_options)
+            
+        url = self.image.build_url(**image_options)
+        return url
