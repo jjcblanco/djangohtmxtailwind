@@ -59,3 +59,22 @@ class Course(models.Model):
             
         url = self.image.build_url(**image_options)
         return url
+
+
+'''lesson model'''
+
+class Lesson(models.Model):
+    title = models.CharField(max_length=120)
+    description = models.TextField(blank=True, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    position = models.IntegerField(default=0)
+    video_url = models.URLField(null=True, blank=True)  
+    video_duration = models.IntegerField(null=True, blank=True)
+    slug = models.SlugField(null=True, blank=True)
+    thumbnail = CloudinaryField("image",null=True)
+    free_preview = models.BooleanField(default=False)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
