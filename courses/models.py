@@ -62,14 +62,30 @@ class Course(models.Model):
 
 
 '''lesson model'''
+# Lesson.objects.create(title="Lesson 1", description="This is the first lesson", course=course)
+# Lesson.ojbects.all()
+# Lesson.objects.filter(course=course)
+# Lesson.objects.filter(course=course).first()
+# Lesson.objects.filter(course=course).last()
+# Lesson.objects.filter(course=course).order_by('position')
+# Lesson.objects.filter(course=course).order_by('-position')
+# Lesson.objects.filter(course=course).order_by('position').first()
+# Lesson.objects.filter(course=course).order_by('position').last()
+# Lesson.objects.filter(course=course).order_by('position').first().position
+# Lesson.objects.filter(course=course).order_by('position').last().position
+# Lesson.objects.filter(course=course).order_by('position').first().title
 
 class Lesson(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
+    can_preview = models.BooleanField(default=False, help_text="This lesson can be previewed by anyone")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices = PublishStatus.choices,default=PublishStatus.DRAFT)
     position = models.IntegerField(default=0)
-    video_url = models.URLField(null=True, blank=True)  
+    #video_url = models.URLField(null=True, blank=True,null=True)  
+    video = CloudinaryField("video",null=True,resource_type="video")
     video_duration = models.IntegerField(null=True, blank=True)
+    order = models.IntegerField(default=0)
     slug = models.SlugField(null=True, blank=True)
     thumbnail = CloudinaryField("image",null=True)
     free_preview = models.BooleanField(default=False)
@@ -78,3 +94,7 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['order','-updated'] # order by order field
+
