@@ -1,6 +1,7 @@
 from django.db import models
 import helpers
 from cloudinary.models import CloudinaryField
+from django.utils.text import slugify
 
 helpers.cloudinary_init()
 
@@ -20,14 +21,28 @@ def handle_uploaded_file(f,file_name):
     
     return f"uploads/{file_name}"
     
+def get_public_id_prefix(instance,*args, **kwargs):
+    print(args)
+    print(kwargs)
+    title = instance.title
+    if title:
+        slug= slugify(title)
+        return f"courses/{slug}"
+    if instance.id:
+        return f"courses/{instance.id}"
+    return "courses"
 
 class Course(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
     #image = models.ImageField(upload_to=handle_uploaded_file, null=True, blank=True)
     image = CloudinaryField("image",null=True)
+    public_is_prefix = get_public_id_prefix()
     access = models.CharField(max_length=10, choices = AccessRequierements.choices,default=AccessRequierements.ANYONE)
     status = models.CharField(max_length=10, choices = PublishStatus.choices,default=PublishStatus.DRAFT)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    #slug = models.SlugField(null=True, blank=True)
 
     @property
     def is_published(self):

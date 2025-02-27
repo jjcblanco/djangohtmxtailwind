@@ -16,6 +16,7 @@ class LessonInline(admin.TabularInline): # this will add the Lesson model to the
         # your code here to display the image
         # for example:
         return format_html('<img src="{}" />'.format(obj.thumbnail.url))
+    
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     inlines = [LessonInline] # this will add the Lesson model to the Course admin panel
