@@ -22,27 +22,47 @@ def handle_uploaded_file(f,file_name):
     return f"uploads/{file_name}"
     
 def get_public_id_prefix(instance,*args, **kwargs):
-    print(args)
-    print(kwargs)
+    title = instance.title
+    if title:
+        return title
+    if instance.id:
+        return f"courses/{instance.id}"
+    return "Course Upload"
+
+def get_display_name(instance,*args, **kwargs):
     title = instance.title
     if title:
         slug= slugify(title)
-        return f"courses/{slug}"
+        unique_id = str(uuid.uuid4()).replace("-","")[:6]
+        return f"courses/{slug}-{unique_id}"
     if instance.id:
         return f"courses/{instance.id}"
     return "courses"
 
+
 class Course(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
+    public_id = models.CharField(max_length=130, blank=True, null=True)
     #image = models.ImageField(upload_to=handle_uploaded_file, null=True, blank=True)
-    image = CloudinaryField("image",null=True)
-    public_is_prefix = get_public_id_prefix()
+    image = CloudinaryField(
+        "image",null=True,
+        public_is_prefix = get_public_id_prefix,
+        display_name = get_display_name,
+        tags=["course","thumbnail"]
+        )
+
     access = models.CharField(max_length=10, choices = AccessRequierements.choices,default=AccessRequierements.ANYONE)
     status = models.CharField(max_length=10, choices = PublishStatus.choices,default=PublishStatus.DRAFT)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     #slug = models.SlugField(null=True, blank=True)
+    def save(self, *args, **kwargs):
+        #before saving the model
+        if self.public_id == "" and self.public_id is None:
+            
+            self.public_id = None
+        return super().save()
 
     @property
     def is_published(self):
