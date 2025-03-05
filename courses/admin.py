@@ -11,7 +11,7 @@ from .models import Course
 class LessonInline(admin.TabularInline): # this will add the Lesson model to the Course admin panel
     model = Lesson  # this will add the Lesson model to the Course admin panel
     extra = 0 # this will add the Lesson model to the Course admin panel
-    readonly_fields = ['display_image'] # this will add the Lesson model to the Course admin panel
+    readonly_fields = ['public_id','updated'] # this will add the Lesson model to the Course admin panel
     def display_image(self, obj):
         # your code here to display the image
         # for example:
@@ -22,8 +22,8 @@ class CourseAdmin(admin.ModelAdmin):
     inlines = [LessonInline] # this will add the Lesson model to the Course admin panel
     list_display = ['title', 'status','access']
     list_filter =['status','access']
-    fields = ['title','description','status', 'image','access','display_image']
-    readonly_fields = ['display_image']
+    fields = ['public_id','title','description','status', 'image','access','display_image']
+    readonly_fields = ['public_id','display_image']
 
     def display_image(self,obj,*args,**kwargs):
         print(obj.image.url)
