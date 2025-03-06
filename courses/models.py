@@ -1,14 +1,12 @@
-from django.db import models
 import uuid
 import helpers
-from cloudinary.models import CloudinaryField
+from django.db import models
 from django.utils.text import slugify
+from cloudinary.models import CloudinaryField
 
 helpers.cloudinary_init()
 
-# Create your models here.
-
-class AccessRequierements(models.TextChoices): 
+class AccessRequirement(models.TextChoices):
     ANYONE = 'any', 'Anyone'
     EMAILREQUIRED = 'email', 'Email Required'
   
@@ -72,7 +70,7 @@ class Course(models.Model):
         tags=["course","thumbnail"]
         )
 
-    access = models.CharField(max_length=10, choices = AccessRequierements.choices,default=AccessRequierements.ANYONE)
+    access = models.CharField(max_length=10, choices = AccessRequirement.choices,default=AccessRequirement.ANYONE)
     status = models.CharField(max_length=10, choices = PublishStatus.choices,default=PublishStatus.DRAFT)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -97,32 +95,16 @@ class Course(models.Model):
         return self.status == PublishStatus.PUBLISHED
 
     @property 
-    def image_admin(self):
-        if not self.image:
-            return ""
-        image_options = {	
-            "width": 400,
-            "height": 400,
-            "crop": "fill"
-        }
-               
-        url = self.image.build_url(image_options)
-        return url
+    def image_admin_url(self):
+        return  helpers.get_cloudinary_image_object(self,field_name="image",as_html=False,width=400,height=400)
+       
     
-    def image_thumbnail(self,as_html=False,width=400,height=400):
-        if not self.image:
-            return ""
-        image_options = {	
-            "width": 400,
-            "height": 400,
-            "crop": "fill"
-        }
-        if as_html:
-            return self.image.image(**image_options)
-            
-        url = self.image.build_url(**image_options)
-        return url
-
+    def image_thumbnail(self):
+        
+        return  helpers.get_cloudinary_image_object(self,field_name="image",as_html=False,width=400,height=400)
+        
+    def get_image_detail(self):
+        return  helpers.get_cloudinary_image_object(self,field_name="image",as_html=False,width=750,height=750)
 
 '''lesson model'''
 # Lesson.objects.create(title="Lesson 1", description="This is the first lesson", course=course)
@@ -141,6 +123,7 @@ class Course(models.Model):
 class Lesson(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
+    public_id = models.CharField(max_length=130, blank=True, null=True, db_index=True)
     can_preview = models.BooleanField(default=False, help_text="This lesson can be previewed by anyone")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices = PublishStatus.choices,default=PublishStatus.DRAFT)
@@ -150,7 +133,9 @@ class Lesson(models.Model):
                             public_id_prefix = get_public_id_prefix,
                             display_name = get_display_name,
                             tags=["video","lesson"],
-                            null=True,resource_type="video")
+                            null=True,
+                            type="private",
+                            resource_type="video")
     video_duration = models.IntegerField(null=True, blank=True)
     order = models.IntegerField(default=0)
     slug = models.SlugField(null=True, blank=True)
