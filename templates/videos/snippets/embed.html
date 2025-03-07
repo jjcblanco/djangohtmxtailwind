@@ -1,5 +1,8 @@
 <video controls 
-autoplay  data-cloud-name= "{{ cloud_name}}" id="demo-player" 
+autoplay  data-cloud-name= "{{ cloud_name}}" 
+data-video-url = "{{ video_url }}"
+data-public-id = "{{ public_id }}"
+id="demo-player" 
     class="cfe-video"
     
     source src="{{video_url}}"
@@ -7,8 +10,13 @@ autoplay  data-cloud-name= "{{ cloud_name}}" id="demo-player"
 </video>
 
 <script>
-    var player = document.getElementById("demo-player");
+    const videoPlayerid = 'demo-player';
+    const  cld = cloudinary.Cloudinary.new({ cloud_name: 'demo' });
+    var player = document.getElementById(videoPlayerid);
     if(player){
+        const cloudname = player.dataset.cloudName;
+        const publicId = player.dataset.publicId;
+
         console.log('Video started');
         alert('Video started');
     }
