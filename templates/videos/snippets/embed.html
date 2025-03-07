@@ -1,7 +1,16 @@
-<video id="demo-player" 
+<video controls 
+autoplay  data-cloud-name= "{{ cloud_name}}" id="demo-player" 
     class="cfe-video"
-    controls 
-    autoplay 
+    
     source src="{{video_url}}"
       >
 </video>
+
+<script>
+    var player = document.getElementById("demo-player");
+    if(player){
+        console.log('Video started');
+        alert('Video started');
+    }
+</script>
+

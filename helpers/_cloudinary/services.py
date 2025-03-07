@@ -70,10 +70,8 @@ def get_cloudinary_video_object(instance,
         print("aca entraaao")
         template_name = "videos/snippets/embed.html"
         tmpl = get_template(template_name)
-        print("tmpl",tmpl)
-        
-        _html = tmpl.render({'video_url': url})
-        print("aca renderiza",_html)
+        cloud_name = settings.CLOUDINARY_CLOUD_NAME
+        _html = tmpl.render({'video_url': url, 'cloud_name': cloud_name})
         
         return _html
         #return video_html.format(video_url=url).strip()
