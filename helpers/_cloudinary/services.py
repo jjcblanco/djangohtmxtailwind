@@ -1,57 +1,81 @@
+#from .models import Course, Lesson
+from django.conf import settings
+from django.template.loader import get_template
+
+
+
 def get_cloudinary_image_object(instance, 
                           field_name="image",
                           as_html=False,
+                          format=None,
                           width=400,
                           height=400
                           ):
-    if not hasattr(instance, field_name):
-        return ""
+    
+    
     image_object = getattr(instance, field_name)
+    
     if not image_object:
+        print("no tiene la imagen")
         return ""
     image_options = {	
         "width": width,
-        "height": height,
-        "crop": "fill"
+        "height": height
+        
     }
+
+    if format is not None:
+        image_options['format'] = format
     if as_html:
-        return instance.image.image(**image_options)
-            
-    url = instance.image.build_url(**image_options)
+          return image_object.image(**image_options)
+    url = image_object.build_url(**image_options)
+        
     return url
     
-   
+video_html = """
+<video controls autoplay source src="{video_url}" />  </video> """
+
 def get_cloudinary_video_object(instance, 
-                        field_name="video",
-                        as_html=False,
-                        width=None,
-                        height=None,
-                        sign_url=False,  #para videos privados
-                        fetch_format="auto",
-                        quality="auto"
-                        ):
+                                field_name="video",
+                                as_html=True,
+                                width=None,
+                                height=None,
+                                sign_url=True, # for private videos
+                                fetch_format = "auto",
+                                quality = "auto",
+                                controls=True,
+                                autoplay=True,
+                                ):
     if not hasattr(instance, field_name):
-        return ""
+         return ""
     video_object = getattr(instance, field_name)
     if not video_object:
         return ""
-    video_options = {	
-        "width": width,
-        "height": height,
-        "crop": "fill",
+    video_options = {
+        "sign_url": sign_url,
         "fetch_format": fetch_format,
-        "quality": quality
+        "quality": quality,
+        "controls": controls,
+        "autoplay": autoplay,
     }
-    if width:
-        video_options["width"] = width
-    if height:
-        video_options["height"] = height
-    if width and height:
-        video_options["crop"] = "limit"
-        
-
+    if width is not None:
+        video_options['width'] =width
+    if height is not None:
+        video_options['height'] =height
+    if height and width:
+        video_options['crop'] = "limit"
+    url = video_object.build_url(**video_options)
+    print("url del video",url)
     if as_html:
-        return video_object.video(**video_options)
-            
-    url = video_object.video.build_url(**video_options)
+        print("aca entraaao")
+        template_name = "videos/snippets/embed.html"
+        tmpl = get_template(template_name)
+        print("tmpl",tmpl)
+        
+        _html = tmpl.render({'video_url': url})
+        print("aca renderiza",_html)
+        
+        return _html
+        #return video_html.format(video_url=url).strip()
     return url
+    

@@ -43,8 +43,8 @@ def get_public_id_prefix(instance,*args, **kwargs):
     model_name = model_class.__name__
     model_name_slug = slugify(model_name)
     if not public_id:
-        return "Courses"
-    return f"courses/{public_id}"
+        return f"{model_name_slug}"
+    return f"{model_name_slug}/{public_id}"
 
 def get_display_name(instance,is_thumbnail = False,*args, **kwargs):
     if hasattr(instance,'get_display_name'):
@@ -55,7 +55,7 @@ def get_display_name(instance,is_thumbnail = False,*args, **kwargs):
     model_name = model_class.__name__
 
     return f"{model:name} Upload"
-get_thumbnail_display_name = lambda instance:get_display_name(instance,is_thumbnail = True)
+#get_thumbnail_display_name = lambda instance:get_display_name(instance,is_thumbnail = True)
 
 class Course(models.Model):
     title = models.CharField(max_length=120)
@@ -87,9 +87,29 @@ class Course(models.Model):
     @property
     def path(self):
         return f"courses/{self.public_id}"
+    
     def get_display_name(self):
         return f"{self.title} - Course " 
 
+    def get_thumbnail(self):
+            if not self.image:
+                return None
+            return helpers.get_cloudinary_image_object(
+                self, 
+                field_name='image',
+                as_html=False,
+                width=382
+            )
+    def get_display_image(self):
+        if not self.image:
+            return None
+        return helpers.get_cloudinary_image_object(
+            self, 
+            field_name='image',
+            as_html=False,
+            width=750
+        )
+    
     @property
     def is_published(self):
         return self.status == PublishStatus.PUBLISHED
@@ -133,6 +153,7 @@ class Lesson(models.Model):
                             public_id_prefix = get_public_id_prefix,
                             display_name = get_display_name,
                             tags=["video","lesson"],
+                            blank=True,
                             null=True,
                             type="private",
                             resource_type="video")
@@ -142,7 +163,8 @@ class Lesson(models.Model):
     thumbnail = CloudinaryField("image",
                                 public_id_prefix = get_public_id_prefix,
                                 display_name = get_display_name,
-                                tags=["lesson","thumbnail"],
+                                tags=["thumbnail","lesson"],
+                                blank=True,
                                 null=True)
     free_preview = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True)
@@ -167,5 +189,26 @@ class Lesson(models.Model):
             course_path = course_path[1:]
 
         return f"{self.course.path}/lessons/{self.public_id}"
+    
     def get_display_name(self):
         return f"{self.title} - {self.course.get_display_name()}" 
+    
+    def get_thumbnail(self):
+        width = 382
+        if self.thumbnail:
+            return helpers.get_cloudinary_image_object(
+                self, 
+                field_name='thumbnail',
+                format='jpg',
+                as_html=False,
+                width=width
+            )
+        elif self.video:
+            return helpers.get_cloudinary_image_object(
+            self, 
+            field_name='video',
+            format='jpg',
+            as_html=False,
+            width=width
+        )
+        return 

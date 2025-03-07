@@ -6,7 +6,7 @@ from .models import Course, Lesson
 
 
 # Register your models here.
-from .models import Course
+
 
 
 class LessonInline(admin.StackedInline): # this will add the Lesson model to the Course admin panel
@@ -18,19 +18,22 @@ class LessonInline(admin.StackedInline): # this will add the Lesson model to the
     def display_image(self, obj, *args, **kwargs):
         # your code here to display the image
         # for example:
-        url = helpers.get_cloudinary_image_object(obj, field_name="thumnail", as_html=False, width=200, height=200)
+       
+        url = helpers.get_cloudinary_image_object(obj, field_name="thumbnail", width=200, height=200)
+       
         return format_html(f"<img src={url} />")
     
     display_image.short_description = 'Thumbnail'
     
     def display_video(self, obj, *args, **kwargs):
+        print("entro a display_video")
         video_embed_html = helpers.get_cloudinary_video_object(
             obj, 
             field_name='video',
             as_html=True,
             width=550
         )
-        return format_html(f"{url}")
+        return video_embed_html
     
     display_video.short_description = 'Video'
     

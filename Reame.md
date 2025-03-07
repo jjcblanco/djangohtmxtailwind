@@ -1,2 +1,3 @@
-2:28:25
+2:56:06
 
+video con renderizado en admin funcionando
