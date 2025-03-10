@@ -1,24 +1,19 @@
-<video controls 
-autoplay  data-cloud-name= "{{ cloud_name}}" 
-data-video-url = "{{ video_url }}"
-data-public-id = "{{ public_id }}"
-id="demo-player" 
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-video-player/2.0.5/cld-video-player.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-video-player/2.0.5/cld-video-player.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous"></script>
+
+{% include 'base/js.html' %}
+<video id="demo-player" 
     class="cfe-video"
-    
-    source src="{{video_url}}"
-      >
+    controls 
+    autoplay 
+    data-video-url="{{ video_url }}"
+    data-cloud-name="{{ cloud_name }}"
+    data-cld-colors='{ "base": "{% if base_color %}{{ base_color }}{% else %}#000000{% endif %}", "accent": "#db8226", "text": "#fff" }'
+    class="cld-video-player cld-video-player-skin-light"
+    >
 </video>
 
-<script>
-    const videoPlayerid = 'demo-player';
-    const  cld = cloudinary.Cloudinary.new({ cloud_name: 'demo' });
-    var player = document.getElementById(videoPlayerid);
-    if(player){
-        const cloudname = player.dataset.cloudName;
-        const publicId = player.dataset.publicId;
 
-        console.log('Video started');
-        alert('Video started');
-    }
-</script>
 
