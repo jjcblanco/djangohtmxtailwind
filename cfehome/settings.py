@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "courses",
-    
     "tailwind",
+    "theme",
     "cloudinary",
     "django_htmx",
 ]
