@@ -61,6 +61,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+#if DEBUG:
+    # django-tailwind theme app
+ #   INSTALLED_APPS.append('django_browser_reload')
+  #  MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
+
+
 ROOT_URLCONF = 'cfehome.urls'
 
 TEMPLATES = [
@@ -132,6 +138,13 @@ USE_TZ = True
 STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = LOCAL_CDN / "media"
+
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = [
+    "0.0.0.0",
+    "127.0.0.1",
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
