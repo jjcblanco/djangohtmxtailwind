@@ -9,9 +9,15 @@ def home_view(request):
 # Create your views here.
 def course_list_view(request):
     queryset = services.get_publish_courses()
-    #return JsonResponse({'courses': list(queryset.values())})
-    return render(request, 'courses/course_list.html', {'courses': queryset})
-    
+    context = {
+        "object_list": queryset
+    }
+    template_name = "courses/list.html"
+    if request.htmx:
+        template_name = "courses/snippets/list-display.html"
+        context['queryset'] = queryset[:3]
+    return render(request, template_name, context)
+
 def course_detail_view(request):
     queryset = services.get_course_detail()
     return render(request, 'courses/course_detail.html')

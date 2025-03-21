@@ -34,6 +34,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+
 
 # Application definition
 
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
     "theme",
     "cloudinary",
     "django_htmx",
+   # "django_browser_reload",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 #if DEBUG:
