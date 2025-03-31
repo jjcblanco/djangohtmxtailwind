@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+<h1>{{ object.title }}</h1>
+
+
+{% if object.is_comming_soon %}
+
+<p class="alert alert-info">This course is coming soon!</p>
+{% else %}  
+<p class="alert alert-success">This course is available!</p>
+{% endif %}
+
+{% if object.is_published %}
+
+{{ video_embed }}
+
+{% endif %}
+{% endblock content %}

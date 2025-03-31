@@ -6,7 +6,7 @@ def home_view(request):
     
     return render(request, 'home.html')
 
-# Create your views here.
+
 def course_list_view(request):
     queryset = services.get_publish_courses()
     context = {
@@ -27,9 +27,12 @@ def lesson_detail_view(request,course_id=None,lesson_id=None,*args,**kwargs):
     queryset = services.get_lesson_detail(course_id,lesson_id)
     if queryset is None:
         return render(request, '404.html')
+    template_name ="courses/lesson-comming-soon.html"
+    if not queryset.is_comming_soon:
+        template_name = "courses/lesson.html"
     context = {
         'object': queryset
     }
-    return render(request, 'courses/lesson_detail.html', context)
+    return render(request, 'courses/lesson.html', context)
     
 
