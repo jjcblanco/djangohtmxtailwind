@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .import services
 from .models import Course
+from django.http import Http404, JsonResponse
 
 def home_view(request):
     
@@ -18,9 +19,18 @@ def course_list_view(request):
         context['queryset'] = queryset[:3]
     return render(request, template_name, context)
 
-def course_detail_view(request):
-    queryset = services.get_course_detail()
-    return render(request, 'courses/course_detail.html')
+def course_detail_view(request, course_id=None, *args, **kwarg):
+    course_obj = services.get_course_detail(course_id=course_id)
+    if course_obj is None:
+        raise Http404
+    lessons_queryset = services.get_course_lessons(course_obj)
+    context = {
+        "object": course_obj,
+        "lessons_queryset": lessons_queryset,
+    }
+    # return JsonResponse({"data": course_obj.id, 'lesson_ids': [x.path for x in lessons_queryset] })
+    return render(request, "courses/detail.html", context)
+
 
 def lesson_detail_view(request,course_id=None,lesson_id=None,*args,**kwargs):
     print(course_id,lesson_id)

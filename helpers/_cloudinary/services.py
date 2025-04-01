@@ -4,6 +4,7 @@ from django.template.loader import get_template
 
 
 
+
 def get_cloudinary_image_object(instance, 
                           field_name="image",
                           as_html=False,
