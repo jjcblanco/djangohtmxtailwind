@@ -27,6 +27,7 @@ def logout_btn_hx_view(request):
     return render(request, "emails/hx/logout-btn.html", {})
 
 def email_token_login_view(request):
+    
     if not request.htmx:
         return redirect('/')
     email_id_in_session = request.session.get('email_id')
